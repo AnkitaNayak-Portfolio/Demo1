@@ -87,8 +87,89 @@ const loginUser = async (req, res) => {
     }
 };
 
+const updateUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        ).select('-password');
+        
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        await user.deleteOne();
+        res.status(200).json({ id: req.params.id });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const crypto = require('crypto');
+const sendEmail = require('../utils/sendEmail');
+
+const forgotPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Generate token
+        const resetToken = crypto.randomBytes(20).toString('hex');
+        
+        // Hash token and set to resetPasswordToken field
+        user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        
+        // Set expire to 10 minutes
+        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        // Create reset URL
+        const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please click on the following link, or paste this into your browser to complete the process:\n\n${resetUrl}`;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password Reset Token',
+                message
+            });
+
+            res.status(200).json({ 
+                message: 'Email sent successfully!'
+            });
+        } catch (err) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save();
+            return res.status(500).json({ message: 'Email could not be sent' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     createUser,
-    loginUser
+    loginUser,
+    updateUser,
+    deleteUser,
+    forgotPassword
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, Clock, Users, ArrowLeft } from 'lucide-react';
+import { Search, Star, Clock, Users, ArrowLeft, PlayCircle, Bookmark } from 'lucide-react';
 import videoStudy1 from './4k-free-stock-video-studying-education-and-learning-ytmp4.savetube.vip.mp4';
 
 const courses = [
@@ -106,34 +106,47 @@ const courses = [
 ];
 
 const CourseCard = ({ course }) => (
-  <div className="bg-zinc-800/50 rounded-xl overflow-hidden border border-white/10 hover:border-yellow-400/50 transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-    <div className="relative h-48 overflow-hidden">
-      <img src={course.image} alt={course.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-      <div className="absolute top-4 left-4 bg-yellow-400 text-zinc-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-        {course.category}
-      </div>
-    </div>
-    <div className="p-6">
-      <div className="flex items-center gap-1 text-yellow-400 mb-3">
-        <Star size={16} className="fill-current" />
-        <span className="text-sm font-bold text-white ml-1">{course.rating}</span>
-        <span className="text-gray-400 text-xs">({course.students})</span>
-      </div>
-      <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 leading-snug group-hover:text-yellow-400 transition-colors">{course.title}</h3>
-      <p className="text-gray-400 text-sm mb-4">By {course.instructor}</p>
-      
-      <div className="flex items-center justify-between pt-4 border-t border-white/10">
-        <div className="flex items-center gap-4 text-gray-400 text-xs">
-          <div className="flex items-center gap-1">
-            <Clock size={14} />
-            <span>{course.duration}</span>
+  <div className="group relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent hover:from-indigo-500/50 transition-colors duration-500 overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div className="bg-slate-900/90 backdrop-blur-xl h-full rounded-[23px] overflow-hidden flex flex-col relative z-10 shadow-2xl">
+      <div className="relative h-56 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+        <img src={course.image} alt={course.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out" />
+        <div className="absolute top-4 left-4 z-20">
+          <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold px-3.5 py-1.5 rounded-full tracking-wide shadow-lg">
+            {course.category}
+          </span>
+        </div>
+        <button className="absolute top-4 right-4 z-20 p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white/70 hover:text-white hover:bg-indigo-500/50 border border-white/10 transition-all duration-300">
+          <Bookmark size={18} />
+        </button>
+        <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between">
+          <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10">
+            <Star size={14} className="text-amber-400 fill-amber-400" />
+            <span className="text-sm font-bold text-white">{course.rating}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Users size={14} />
-            <span>{course.students}</span>
+          <div className="w-10 h-10 rounded-full bg-indigo-500/80 backdrop-blur-md flex items-center justify-center text-white translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 shadow-lg shadow-indigo-500/30 border border-indigo-400">
+            <PlayCircle size={20} className="ml-0.5" />
           </div>
         </div>
-        <span className="text-xl font-black text-white">{course.price}</span>
+      </div>
+      <div className="p-7 flex flex-col flex-1">
+        <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 leading-snug group-hover:text-indigo-300 transition-colors duration-300">{course.title}</h3>
+        <p className="text-slate-400 text-sm mb-6 flex-1">By <span className="text-slate-300 font-medium">{course.instructor}</span></p>
+        
+        <div className="flex items-center justify-between pt-5 border-t border-white/5">
+          <div className="flex items-center gap-4 text-slate-400 text-xs font-medium">
+            <div className="flex items-center gap-1.5">
+              <Clock size={14} className="text-indigo-400" />
+              <span>{course.duration}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Users size={14} className="text-purple-400" />
+              <span>{course.students}</span>
+            </div>
+          </div>
+          <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-white">{course.price}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -146,64 +159,85 @@ const CoursesPage = () => {
     ? courses 
     : courses.filter(course => course.category === activeCategory);
 
+  const categories = ['All', 'Development', 'Design', 'Business', 'Marketing', 'Data Science', 'Photography'];
+
   return (
-    <div className="min-h-screen bg-zinc-900 font-sans text-white pb-20">
-      {/* Header */}
-      <div className="relative h-[400px] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-zinc-900">
+    <div className="min-h-screen bg-slate-950 font-sans text-slate-50 selection:bg-indigo-500/30 relative pb-24 overflow-x-hidden">
+      {/* Abstract Background Gradients */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div className="absolute top-[40%] right-[-10%] w-[30%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full mix-blend-screen"></div>
+      </div>
+
+      {/* Hero Section */}
+      <div className="relative pt-32 pb-20 px-6 z-10 flex flex-col items-center justify-center text-center overflow-hidden border-b border-white/5">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/80 to-slate-950 z-10"></div>
           <video 
             autoPlay 
             loop 
             muted 
             playsInline 
             poster="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=2070"
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
           >
             <source src={videoStudy1} type="video/mp4" />
           </video>
         </div>
-        <div className="absolute inset-0 bg-black/50 z-0 mix-blend-multiply"></div>
         
-        <Link to="/" className="absolute top-8 left-8 md:top-12 md:left-12 z-20 flex items-center gap-4 text-white hover:text-zinc-900 bg-white/10 hover:bg-yellow-400 backdrop-blur-md px-6 py-3 rounded-full transition-all hover:-translate-x-2 animate-fade-in-up border border-white/20 hover:border-yellow-400 shadow-xl" style={{ animationDelay: '0.4s' }}>
-          <ArrowLeft size={28} />
-          <span className="text-xl font-black tracking-widest uppercase mt-0.5">Back to Home</span>
+        <Link to="/" className="absolute top-8 left-8 md:top-10 md:left-10 z-20 flex items-center gap-3 text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-xl px-5 py-2.5 rounded-full transition-all duration-300 group border border-white/10">
+          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="font-semibold text-sm tracking-wide">Back to Home</span>
         </Link>
         
-        <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+        <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center mt-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-semibold text-sm mb-6 animate-[fadeInUp_0.5s_ease-out]">
+            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            Elevate Your Potential
+          </div>
           
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight animate-fade-in-up">
-            EXPLORE <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500">COURSES</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter animate-[fadeInUp_0.6s_ease-out] leading-tight">
+            Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Mastery</span>
           </h1>
-          <p className="text-gray-300 text-lg md:text-xl max-w-2xl mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            Discover world-class programs designed to elevate your skills and empower your future career.
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mb-12 animate-[fadeInUp_0.7s_ease-out] leading-relaxed">
+            Unlock world-class educational programs meticulously designed by industry experts to accelerate your career.
           </p>
           
-          <div className="relative w-full max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <input 
-              type="text" 
-              placeholder="Search for courses, skills, or instructors..." 
-              className="w-full bg-white/10 border border-white/20 rounded-full py-4 pl-6 pr-14 text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 backdrop-blur-sm transition-all"
-            />
-            <button className="absolute right-2 top-2 bottom-2 bg-yellow-400 text-zinc-900 rounded-full w-12 flex items-center justify-center hover:bg-yellow-300 transition-colors shadow-lg">
-              <Search size={20} />
-            </button>
+          <div className="relative w-full max-w-2xl animate-[fadeInUp_0.8s_ease-out] group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative flex items-center bg-slate-900 border border-white/10 rounded-full p-2">
+              <Search size={22} className="text-slate-500 ml-4" />
+              <input 
+                type="text" 
+                placeholder="What do you want to learn today?" 
+                className="w-full bg-transparent border-none py-3 px-4 text-white placeholder-slate-500 focus:outline-none text-lg"
+              />
+              <button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-full px-8 py-3.5 font-bold shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Course Grid */}
-      <div className="max-w-7xl mx-auto px-8 mt-20">
-        <div className="flex justify-between items-end mb-10">
+      {/* Main Content */}
+      <div className="relative z-10 max-w-[90rem] mx-auto px-6 md:px-10 mt-20">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
           <div>
-            <h2 className="text-3xl font-bold tracking-wide mb-2">Featured Programs</h2>
-            <div className="w-20 h-1 bg-yellow-400"></div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">Featured Programs</h2>
+            <p className="text-slate-400">Hand-picked courses to help you get started.</p>
           </div>
-          <div className="hidden md:flex gap-3 flex-wrap justify-end">
-            {['All', 'Development', 'Design', 'Business', 'Marketing', 'Data Science', 'Photography'].map(cat => (
+          
+          <div className="flex gap-2 flex-wrap pb-1">
+            {categories.map(cat => (
               <button 
                 key={cat} 
                 onClick={() => setActiveCategory(cat)}
-                className={`text-sm font-bold uppercase tracking-wider px-4 py-2 rounded-full border transition-all duration-300 ${cat === activeCategory ? 'border-yellow-400 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]' : 'border-white/20 text-gray-400 hover:border-white hover:text-white'}`}
+                className={`text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-300 ${
+                  cat === activeCategory 
+                  ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/30 border border-indigo-400/50' 
+                  : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 hover:text-white'
+                }`}
               >
                 {cat}
               </button>
@@ -211,16 +245,24 @@ const CoursesPage = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {filteredCourses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))}
-          {filteredCourses.length === 0 && (
-            <div className="col-span-full py-20 text-center text-gray-400 text-lg">
-              No courses found for this category.
-            </div>
-          )}
         </div>
+        
+        {filteredCourses.length === 0 && (
+          <div className="py-32 flex flex-col items-center justify-center text-center">
+             <div className="w-24 h-24 mb-6 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <Search size={40} className="text-slate-500" />
+             </div>
+             <h3 className="text-2xl font-bold text-white mb-2">No courses found</h3>
+             <p className="text-slate-400">We couldn't find any courses matching the "{activeCategory}" category.</p>
+             <button onClick={() => setActiveCategory('All')} className="mt-6 text-indigo-400 hover:text-indigo-300 font-semibold hover:underline">
+               Clear filters
+             </button>
+          </div>
+        )}
       </div>
     </div>
   );

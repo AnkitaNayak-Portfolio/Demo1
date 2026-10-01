@@ -5,6 +5,7 @@ import videoStudy1 from './4k-free-stock-video-studying-education-and-learning-y
 import videoStudy2 from './student-hd-stock-video-footage-free-stock-video-ytmp4.savetube.vip.mp4';
 import { auth, provider } from '../firebase';
 import { signInWithPopup } from 'firebase/auth';
+import { forgotPasswordApi } from '../services/api';
 
 const BackButton = () => (
   <Link to="/" className="absolute top-8 left-8 z-50 flex items-center gap-3 text-white hover:text-yellow-400 transition-all hover:-translate-x-2 bg-black/30 p-3 rounded-full backdrop-blur-md">
@@ -497,7 +498,26 @@ export const AuthPage = ({ isLogin }) => {
               </div>
             </div>
             <div>
-              <label className="text-sm text-gray-400 font-bold mb-2 block">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm text-gray-400 font-bold block">Password</label>
+                {isLogin && (
+                  <button type="button" onClick={async () => {
+                    if (!formData.email) {
+                      setError("Please enter your email to reset password.");
+                    } else {
+                      setError("");
+                      try {
+                        await forgotPasswordApi(formData.email);
+                        alert(`Password reset link sent to your email!`);
+                      } catch (err) {
+                        setError(err.message);
+                      }
+                    }
+                  }} className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors focus:outline-none">
+                    Forgot Password?
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full bg-zinc-900 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-yellow-400" placeholder="••••••••" required />
